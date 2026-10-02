@@ -1,13 +1,128 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FasoLocations</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7f5;color:#24332b}
+header{background:#087443;color:white;padding:24px 18px}
+header h1{margin:0;font-size:30px}
+header p{margin-bottom:0}
+main{max-width:850px;margin:auto;padding:20px}
+.card{background:white;padding:20px;border-radius:14px;margin:18px 0;box-shadow:0 3px 12px #0000000d}
+h2{color:#087443}
+input,select,button{width:100%;padding:13px;margin:7px 0;border-radius:8px;font-size:16px}
+input,select{border:1px solid #ccd8d0;background:white}
+button{background:#087443;color:white;border:0;font-weight:bold;cursor:pointer}
+.item{padding:14px 0;border-bottom:1px solid #e1e8e3}
+.item:last-child{border:0}
+.price{color:#087443;font-weight:bold}
+.small{color:#68756d;font-size:14px}
+footer{text-align:center;padding:24px;background:#183d2d;color:white}
+</style>
 </head>
-
 <body>
-<h1>Bienvenue sur FasoLocations</h1>
-<p>Votre plateforme de location de matériel et de comparaison des prix des matériaux.</p>
+<header>
+<h1>📍 FasoLocations</h1>
+<p>Localisez vos matériaux. Comparez les prix.</p>
+</header>
+
+<main>
+<section class="card">
+<h2>Bienvenue sur FasoLocations</h2>
+<p>Recherchez des matériaux de construction et consultez leurs prix indicatifs.</p>
+<input id="ville" placeholder="Votre ville (ex. Ouagadougou)">
+<input id="recherche" placeholder="Rechercher un matériau..." oninput="afficher()">
+<button onclick="localiser()">📍 Utiliser ma position</button>
+<p id="position" class="small">Ville ou position non renseignée.</p>
+</section>
+
+<section class="card">
+<h2>Matériaux disponibles</h2>
+<p class="small">Prix de démonstration : à vérifier auprès des fournisseurs locaux.</p>
+<div id="liste"></div>
+</section>
+
+<section class="card">
+<h2>Ajouter une demande de prix</h2>
+<input id="materiau" placeholder="Nom du matériau">
+<input id="quantite" type="number" min="1" placeholder="Quantité souhaitée">
+<button onclick="demande()">Préparer ma demande</button>
+<p id="resultat"></p>
+</section>
+</main>
+
+<footer>
+<p>© 2026 FasoLocations</p>
+<p>Facilitons la recherche de matériaux au Burkina Faso.</p>
+</footer>
+
+<script>
+const materiaux=[
+{nom:"Ciment",prix:6000,unite:"sac de 50 kg"},
+{nom:"Sable",prix:25000,unite:"chargement"},
+{nom:"Gravier",prix:35000,unite:"chargement"},
+{nom:"Fer à béton",prix:4500,unite:"barre"},
+{nom:"Brique",prix:150,unite:"unité"}
+];
+
+function afficher(){
+const q=document.getElementById("recherche").value.toLowerCase();
+const liste=document.getElementById("liste");
+const resultats=materiaux.filter(m=>m.nom.toLowerCase().includes(q));
+liste.innerHTML="";
+if(!resultats.length){
+liste.textContent="Aucun matériau trouvé.";
+return;
+}
+resultats.forEach(m=>{
+const div=document.createElement("div");
+div.className="item";
+const nom=document.createElement("strong");
+nom.textContent=m.nom;
+const detail=document.createElement("p");
+detail.className="price";
+detail.textContent=m.prix.toLocaleString("fr-FR")+" FCFA / "+m.unite;
+div.append(nom,detail);
+liste.appendChild(div);
+});
+}
+
+function localiser(){
+const ville=document.getElementById("ville").value.trim();
+if(ville){
+document.getElementById("position").textContent="Ville indiquée : "+ville+".";
+return;
+}
+if(!navigator.geolocation){
+document.getElementById("position").textContent="La géolocalisation n'est pas disponible.";
+return;
+}
+document.getElementById("position").textContent="Recherche de votre position...";
+navigator.geolocation.getCurrentPosition(
+p=>{
+document.getElementById("position").textContent=
+"Position obtenue : "+p.coords.latitude.toFixed(4)+", "+p.coords.longitude.toFixed(4);
+},
+()=>{document.getElementById("position").textContent=
+"Position indisponible. Saisissez votre ville manuellement.";}
+);
+}
+
+function demande(){
+const nom=document.getElementById("materiau").value.trim();
+const q=Number(document.getElementById("quantite").value);
+const resultat=document.getElementById("resultat");
+if(!nom||!Number.isFinite(q)||q<=0){
+resultat.textContent="Indiquez un matériau et une quantité valide.";
+return;
+}
+resultat.textContent="Demande préparée : "+nom+" — quantité : "+q+". Les prix et fournisseurs doivent être confirmés localement.";
+}
+afficher();
+</script>
 </body>
 </html>
