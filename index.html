@@ -941,7 +941,7 @@ async function chargerAnnonces() {
 
   if (error) {
     console.error(error);
-    alert("Impossible de charger les annonces.");
+ alert("Erreur Supabase : " + error.message);
     return;
   }
 
