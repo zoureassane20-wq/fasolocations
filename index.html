@@ -177,4 +177,1006 @@ h2 {
 }
 
 .modal-content {
- 
+  background: white;
+  width: 92%;
+  max-width: 550px;
+  margin: 30px auto;
+  padding: 25px;
+  border-radius: 15px;
+}
+
+.close {
+  float: right;
+  font-size: 32px;
+  cursor: pointer;
+  color: #555;
+}
+
+.form-group {
+  margin-bottom: 17px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.form-group textarea {
+  height: 90px;
+  resize: vertical;
+}
+
+.photo-input {
+  background: #f5f7f6;
+  padding: 15px !important;
+}
+
+.preview {
+  display: none;
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  margin-top: 12px;
+  border-radius: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #087443;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 9px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+footer {
+  margin-top: 50px;
+  background: #087443;
+  color: white;
+  text-align: center;
+  padding: 25px;
+}
+
+@media (max-width: 750px) {
+
+  .categories {
+    grid-template-columns: 1fr;
+  }
+
+  .annonces {
+    grid-template-columns: 1fr;
+  }
+
+  .logo {
+    font-size: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="logo">
+    📍 FasoLocations
+  </div>
+
+  <input
+    id="searchInput"
+    class="search"
+    type="text"
+    placeholder="Rechercher un matériel ou un engin..."
+  >
+
+</header>
+
+
+<div class="container">
+
+  <button class="publish-btn" onclick="ouvrirModal()">
+    ➕ Publier une annonce
+  </button>
+
+
+  <h2>Catégories</h2>
+
+  <div class="categories">
+
+    <div
+      class="category active"
+      onclick="filtrerCategorie('Toutes', this)">
+      📋 Toutes
+    </div>
+
+    <div
+      class="category"
+      onclick="filtrerCategorie('Engins', this)">
+      🚜 Engins
+    </div>
+
+    <div
+      class="category"
+      onclick="filtrerCategorie('Construction', this)">
+      🏗️ Construction
+    </div>
+
+    <div
+      class="category"
+      onclick="filtrerCategorie('Outillage', this)">
+      🔧 Outillage
+    </div>
+
+    <div
+      class="category"
+      onclick="filtrerCategorie('Transport', this)">
+      🚚 Transport
+    </div>
+
+  </div>
+
+
+  <h2>Annonces disponibles</h2>
+
+  <div id="annonces" class="annonces">
+
+
+    <!-- ANNONCE 1 -->
+
+    <div
+      class="card"
+      data-nom="Bétonnière"
+      data-categorie="Construction">
+
+      <div class="card-content">
+
+        <h3>🧱 Bétonnière</h3>
+
+        <p>📍 Ouagadougou</p>
+
+        <p class="prix">
+          15 000 FCFA / jour
+        </p>
+
+        <a
+          class="whatsapp"
+          href="https://wa.me/22670000000"
+          target="_blank">
+          💬 WhatsApp
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- ANNONCE 2 -->
+
+    <div
+      class="card"
+      data-nom="Tracteur"
+      data-categorie="Engins">
+
+      <div class="card-content">
+
+        <h3>🚜 Tracteur</h3>
+
+        <p>📍 Bobo-Dioulasso</p>
+
+        <p class="prix">
+          50 000 FCFA / jour
+        </p>
+
+        <a
+          class="whatsapp"
+          href="https://wa.me/22670000000"
+          target="_blank">
+          💬 WhatsApp
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- ANNONCE 3 -->
+
+    <div
+      class="card"
+      data-nom="Groupe électrogène"
+      data-categorie="Outillage">
+
+      <div class="card-content">
+
+        <h3>⚡ Groupe électrogène</h3>
+
+        <p>📍 Ouagadougou</p>
+
+        <p class="prix">
+          10 000 FCFA / jour
+        </p>
+
+        <a
+          class="whatsapp"
+          href="https://wa.me/22670000000"
+          target="_blank">
+          💬 WhatsApp
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div id="noResult" class="no-result">
+    😔 Aucune annonce trouvée.
+  </div>
+
+</div>
+
+
+<!-- =========================
+     FENÊTRE PUBLICATION
+========================= -->
+
+<div id="modal" class="modal">
+
+  <div class="modal-content">
+
+    <span class="close" onclick="fermerModal()">
+      &times;
+    </span>
+
+    <h2>Publier une annonce</h2>
+
+
+    <form id="annonceForm">
+
+
+      <div class="form-group">
+
+        <label>
+          Nom du matériel ou engin
+        </label>
+
+        <input
+          id="nom"
+          type="text"
+          placeholder="Exemple : Tracteur"
+          required>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Catégorie
+        </label>
+
+        <select id="categorie" required>
+
+          <option value="">
+            Choisir une catégorie
+          </option>
+
+          <option value="Engins">
+            🚜 Engins
+          </option>
+
+          <option value="Construction">
+            🏗️ Construction
+          </option>
+
+          <option value="Outillage">
+            🔧 Outillage
+          </option>
+
+          <option value="Transport">
+            🚚 Transport
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Ville
+        </label>
+
+        <input
+          id="ville"
+          type="text"
+          placeholder="Exemple : Ouagadougou"
+          required>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Prix par jour (FCFA)
+        </label>
+
+        <input
+          id="prix"
+          type="number"
+          min="0"
+          placeholder="Exemple : 25000"
+          required>
+
+      </div>
+
+
+      <!-- PHOTO DEPUIS LA GALERIE -->
+
+      <div class="form-group">
+
+        <label>
+          📷 Photo du matériel
+        </label>
+
+        <input
+          id="photoFile"
+          class="photo-input"
+          type="file"
+          accept="image/*">
+
+        <small
+          style="display:block;margin-top:8px;color:#777;">
+          Choisissez une photo depuis la galerie de votre téléphone.
+        </small>
+
+        <img
+          id="preview"
+          class="preview"
+          alt="Aperçu de la photo">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          placeholder="Décrivez votre matériel..."></textarea>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="submit-btn">
+        ✅ Publier l'annonce
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<footer>
+
+  <p>
+    © 2026 FasoLocations
+  </p>
+
+  <p style="margin-top:8px;">
+    Matériels • Engins • Construction • Transport
+  </p>
+
+</footer>
+
+
+<script>
+
+/* =========================
+   VARIABLES
+========================= */
+
+let categorieActuelle = "Toutes";
+
+
+/* =========================
+   MODAL
+========================= */
+
+function ouvrirModal() {
+
+  document.getElementById("modal").style.display = "block";
+
+}
+
+function fermerModal() {
+
+  document.getElementById("modal").style.display = "none";
+
+}
+
+
+/* Fermer la fenêtre en cliquant dehors */
+
+window.addEventListener("click", function(event) {
+
+  const modal = document.getElementById("modal");
+
+  if (event.target === modal) {
+    fermerModal();
+  }
+
+});
+
+
+/* =========================
+   APERÇU PHOTO
+========================= */
+
+document
+.getElementById("photoFile")
+.addEventListener("change", function() {
+
+  const fichier = this.files[0];
+
+  const preview =
+    document.getElementById("preview");
+
+
+  if (!fichier) {
+
+    preview.style.display = "none";
+    preview.src = "";
+
+    return;
+  }
+
+
+  if (!fichier.type.startsWith("image/")) {
+
+    alert("Veuillez choisir une image.");
+
+    this.value = "";
+
+    preview.style.display = "none";
+
+    return;
+  }
+
+
+  const lecteur = new FileReader();
+
+
+  lecteur.onload = function(event) {
+
+    preview.src = event.target.result;
+
+    preview.style.display = "block";
+
+  };
+
+
+  lecteur.readAsDataURL(fichier);
+
+});
+
+
+/* =========================
+   RECHERCHE
+========================= */
+
+document
+.getElementById("searchInput")
+.addEventListener("input", function() {
+
+  filtrerAnnonces();
+
+});
+
+
+/* =========================
+   CATEGORIES
+========================= */
+
+function filtrerCategorie(categorie, element) {
+
+  categorieActuelle = categorie;
+
+
+  document
+    .querySelectorAll(".category")
+    .forEach(function(item) {
+
+      item.classList.remove("active");
+
+    });
+
+
+  element.classList.add("active");
+
+
+  filtrerAnnonces();
+
+}
+
+
+/* =========================
+   FILTRER
+========================= */
+
+function filtrerAnnonces() {
+
+  const recherche =
+    document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase()
+    .trim();
+
+
+  const cartes =
+    document.querySelectorAll(".card");
+
+
+  let nombre = 0;
+
+
+  cartes.forEach(function(carte) {
+
+    const nom =
+      (carte.dataset.nom || "")
+      .toLowerCase();
+
+
+    const categorie =
+      carte.dataset.categorie || "";
+
+
+    const rechercheOK =
+      nom.includes(recherche);
+
+
+    const categorieOK =
+      categorieActuelle === "Toutes" ||
+      categorie === categorieActuelle;
+
+
+    if (rechercheOK && categorieOK) {
+
+      carte.style.display = "block";
+
+      nombre++;
+
+    } else {
+
+      carte.style.display = "none";
+
+    }
+
+  });
+
+
+  document.getElementById("noResult").style.display =
+    nombre === 0 ? "block" : "none";
+
+}
+
+
+/* =========================
+   ICÔNE CATEGORIE
+========================= */
+
+function iconeCategorie(categorie) {
+
+  if (categorie === "Engins") {
+    return "🚜";
+  }
+
+  if (categorie === "Construction") {
+    return "🏗️";
+  }
+
+  if (categorie === "Outillage") {
+    return "🔧";
+  }
+
+  if (categorie === "Transport") {
+    return "🚚";
+  }
+
+  return "📦";
+
+}
+
+
+/* =========================
+   ÉCHAPPER LE TEXTE
+========================= */
+
+function securiser(texte) {
+
+  return String(texte)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   AJOUTER ANNONCE
+========================= */
+
+function ajouterAnnonceHTML(annonce) {
+
+  const conteneur =
+    document.getElementById("annonces");
+
+
+  const carte =
+    document.createElement("div");
+
+
+  carte.className = "card";
+
+
+  carte.dataset.nom =
+    annonce.nom;
+
+
+  carte.dataset.categorie =
+    annonce.categorie;
+
+
+  let contenuPhoto = "";
+
+
+  if (annonce.photo) {
+
+    contenuPhoto =
+      '<img class="card-image" src="' +
+      annonce.photo +
+      '" alt="Photo du matériel">';
+
+  }
+
+
+  let description = "";
+
+
+  if (annonce.description) {
+
+    description =
+      "<p>📝 " +
+      securiser(annonce.description) +
+      "</p>";
+
+  }
+
+
+  carte.innerHTML =
+
+    contenuPhoto +
+
+    '<div class="card-content">' +
+
+      "<h3>" +
+      iconeCategorie(annonce.categorie) +
+      " " +
+      securiser(annonce.nom) +
+      "</h3>" +
+
+      "<p>📍 " +
+      securiser(annonce.ville) +
+      "</p>" +
+
+      description +
+
+      '<p class="prix">' +
+      Number(annonce.prix).toLocaleString("fr-FR") +
+      " FCFA / jour</p>" +
+
+      '<a class="whatsapp" ' +
+      'href="https://wa.me/22670000000" ' +
+      'target="_blank">' +
+      "💬 WhatsApp" +
+      "</a>" +
+
+      '<button class="delete-btn" ' +
+      'onclick="supprimerAnnonce(this)">' +
+      "🗑️ Supprimer" +
+      "</button>" +
+
+    "</div>";
+
+
+  conteneur.appendChild(carte);
+
+
+  filtrerAnnonces();
+
+}
+
+
+/* =========================
+   CHARGER ANNONCES
+========================= */
+
+function chargerAnnonces() {
+
+  let annonces = [];
+
+
+  try {
+
+    annonces =
+      JSON.parse(
+        localStorage.getItem(
+          "fasolocations_annonces"
+        ) || "[]"
+      );
+
+  } catch (erreur) {
+
+    annonces = [];
+
+  }
+
+
+  annonces.forEach(function(annonce) {
+
+    ajouterAnnonceHTML(annonce);
+
+  });
+
+}
+
+
+/* =========================
+   SUPPRIMER
+========================= */
+
+function supprimerAnnonce(bouton) {
+
+  if (!confirm(
+    "Voulez-vous supprimer cette annonce ?"
+  )) {
+
+    return;
+
+  }
+
+
+  const carte =
+    bouton.closest(".card");
+
+
+  const nom =
+    carte.dataset.nom;
+
+
+  let annonces = [];
+
+
+  try {
+
+    annonces =
+      JSON.parse(
+        localStorage.getItem(
+          "fasolocations_annonces"
+        ) || "[]"
+      );
+
+  } catch (erreur) {
+
+    annonces = [];
+
+  }
+
+
+  annonces =
+    annonces.filter(function(annonce) {
+
+      return annonce.nom !== nom;
+
+    });
+
+
+  localStorage.setItem(
+    "fasolocations_annonces",
+    JSON.stringify(annonces)
+  );
+
+
+  carte.remove();
+
+
+  filtrerAnnonces();
+
+}
+
+
+/* =========================
+   FORMULAIRE
+========================= */
+
+document
+.getElementById("annonceForm")
+.addEventListener("submit", function(event) {
+
+  event.preventDefault();
+
+
+  const fichier =
+    document
+    .getElementById("photoFile")
+    .files[0];
+
+
+  const annonce = {
+
+    nom:
+      document
+      .getElementById("nom")
+      .value
+      .trim(),
+
+    categorie:
+      document
+      .getElementById("categorie")
+      .value,
+
+    ville:
+      document
+      .getElementById("ville")
+      .value
+      .trim(),
+
+    prix:
+      document
+      .getElementById("prix")
+      .value,
+
+    photo: "",
+
+    description:
+      document
+      .getElementById("description")
+      .value
+      .trim()
+
+  };
+
+
+  /* S'il y a une photo */
+
+  if (fichier) {
+
+    const lecteur =
+      new FileReader();
+
+
+    lecteur.onload = function(event) {
+
+      annonce.photo =
+        event.target.result;
+
+
+      publierAnnonce(annonce);
+
+    };
+
+
+    lecteur.readAsDataURL(fichier);
+
+
+  } else {
+
+    publierAnnonce(annonce);
+
+  }
+
+});
+
+
+/* =========================
+   PUBLIER
+========================= */
+
+function publierAnnonce(annonce) {
+
+  try {
+
+    let annonces =
+      JSON.parse(
+        localStorage.getItem(
+          "fasolocations_annonces"
+        ) || "[]"
+      );
+
+
+    annonces.push(annonce);
+
+
+    localStorage.setItem(
+      "fasolocations_annonces",
+      JSON.stringify(annonces)
+    );
+
+
+  } catch (erreur) {
+
+    alert(
+      "⚠️ La photo est peut-être trop grande. " +
+      "Essayez une photo plus légère."
+    );
+
+    return;
+
+  }
+
+
+  ajouterAnnonceHTML(annonce);
+
+
+  alert(
+    "✅ Votre annonce a été publiée !"
+  );
+
+
+  document
+    .getElementById("annonceForm")
+    .reset();
+
+
+  document
+    .getElementById("preview")
+    .style.display = "none";
+
+
+  document
+    .getElementById("preview")
+    .src = "";
+
+
+  fermerModal();
+
+}
+
+
+/* =========================
+   DÉMARRAGE
+========================= */
+
+chargerAnnonces();
+
+</script>
+
+</body>
+</html>
