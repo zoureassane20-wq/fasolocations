@@ -1104,66 +1104,117 @@ document
    PUBLIER
 ========================= */
 
-function publierAnnonce(annonce) {
+async function publierAnnonce(annonce) {
 
   try {
 
-    let annonces =
-      JSON.parse(
-        localStorage.getItem(
-          "fasolocations_annonces"
-        ) || "[]"
-      );
+    let photo_url = "";
 
+    /* =========================
+       ENVOYER LA PHOTO
+    ========================= */
 
-    annonces.push(annonce);
+    if (annonce.photo) {
 
+      const response = await fetch(annonce.photo);
+      const blob = await response.blob();
 
-    localStorage.setItem(
-      "fasolocations_annonces",
-      JSON.stringify(annonces)
+      const extension =
+        blob.type.split("/")[1] || "jpg";
+
+      const nomFichier =
+        Date.now() + "-" +
+        crypto.randomUUID() +
+        "." +
+        extension;
+
+      const { error: uploadError } =
+        await sb.storage
+          .from("annonces")
+          .upload(
+            nomFichier,
+            blob,
+            {
+              contentType: blob.type,
+              upsert: false
+            }
+          );
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: publicData } =
+        sb.storage
+          .from("annonces")
+          .getPublicUrl(nomFichier);
+
+      photo_url = publicData.publicUrl;
+    }
+
+    /* =========================
+       ENREGISTRER L'ANNONCE
+    ========================= */
+
+    const { data, error } =
+      await sb
+        .from("annonces")
+        .insert([
+          {
+            nom: annonce.nom,
+            categorie: annonce.categorie,
+            ville: annonce.ville,
+            prix: Number(annonce.prix),
+            photo_url: photo_url,
+            description: annonce.description,
+            whatsapp: "22670000000"
+          }
+        ])
+        .select()
+        .single();
+
+    if (error) {
+      throw error;
+    }
+
+    /* =========================
+       AFFICHER L'ANNONCE
+    ========================= */
+
+    data.photo = data.photo_url;
+
+    ajouterAnnonceHTML(data);
+
+    alert(
+      "✅ Votre annonce a été publiée !"
     );
 
+    document
+      .getElementById("annonceForm")
+      .reset();
+
+    document
+      .getElementById("preview")
+      .style.display = "none";
+
+    document
+      .getElementById("preview")
+      .src = "";
+
+    fermerModal();
 
   } catch (erreur) {
 
-    alert(
-      "⚠️ La photo est peut-être trop grande. " +
-      "Essayez une photo plus légère."
-    );
+    console.error(erreur);
 
-    return;
+    alert(
+      "❌ Erreur lors de la publication : " +
+      erreur.message
+    );
 
   }
 
-
-  ajouterAnnonceHTML(annonce);
-
-
-  alert(
-    "✅ Votre annonce a été publiée !"
-  );
-
-
-  document
-    .getElementById("annonceForm")
-    .reset();
-
-
-  document
-    .getElementById("preview")
-    .style.display = "none";
-
-
-  document
-    .getElementById("preview")
-    .src = "";
-
-
-  fermerModal();
-
 }
-
 
 /* =========================
    DÉMARRAGE
