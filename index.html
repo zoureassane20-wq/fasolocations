@@ -594,7 +594,14 @@ footer {
 </footer>
 
 
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <script>
+const SUPABASE_URL = "https://fjdkzdntjjgbflmfuvww.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_......";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
 
 /* =========================
    VARIABLES
@@ -924,37 +931,25 @@ function ajouterAnnonceHTML(annonce) {
 }
 
 
-/* =========================
-   CHARGER ANNONCES
-========================= */
 
-function chargerAnnonces() {
+async function chargerAnnonces() {
 
-  let annonces = [];
+  const { data, error } = await sb
+    .from("annonces")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-
-  try {
-
-    annonces =
-      JSON.parse(
-        localStorage.getItem(
-          "fasolocations_annonces"
-        ) || "[]"
-      );
-
-  } catch (erreur) {
-
-    annonces = [];
-
+  if (error) {
+    console.error(error);
+    alert("Impossible de charger les annonces.");
+    return;
   }
 
-
-  annonces.forEach(function(annonce) {
-
+  data.forEach(function(annonce) {
     ajouterAnnonceHTML(annonce);
-
   });
 
+  filtrerAnnonces();
 }
 
 
